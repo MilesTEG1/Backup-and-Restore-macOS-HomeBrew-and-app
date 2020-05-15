@@ -1,0 +1,73 @@
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "homebrew/core"
+brew "archey"
+brew "bash"
+brew "cmake"
+brew "exiftool"
+brew "ffmpeg"
+brew "ghostscript"
+brew "gifsicle"
+brew "htop"
+brew "imagemagick@6"
+brew "lsd"
+brew "mas"
+brew "nmap"
+brew "pkg-config"
+brew "pyenv"
+brew "shfmt"
+brew "tidy-html5", link: false
+brew "uncrustify"
+brew "wget"
+cask "adobe-acrobat-reader"
+cask "anki"
+cask "arduino"
+cask "bartender"
+cask "basictex"
+cask "calibre"
+cask "carbon-copy-cloner"
+cask "cyberduck"
+cask "find-any-file"
+cask "firefox"
+cask "flux"
+cask "font-fira-code"
+cask "font-hack-nerd-font"
+cask "font-liberationmono-nerd-font"
+cask "font-meslo-for-powerline"
+cask "font-meslo-nerd-font"
+cask "font-meslolg-nerd-font"
+cask "font-source-code-pro-for-powerline"
+cask "font-sourcecodepro-nerd-font"
+cask "forklift"
+cask "google-chrome"
+cask "istat-menus"
+cask "iterm2"
+cask "itsycal"
+cask "keka"
+cask "libreoffice"
+cask "libreoffice-language-pack"
+cask "little-snitch"
+cask "macs-fan-control"
+cask "onyx"
+cask "spotify"
+cask "steam"
+cask "syntax-highlight"
+cask "teamviewer"
+cask "visual-studio-code"
+cask "vlc"
+mas "Amphetamine", id: 937984704
+mas "BetterSnapTool", id: 417375580
+mas "HomeAtmo", id: 1359795390
+mas "iMovie", id: 408981434
+mas "Messenger", id: 1480068668
+mas "Microsoft Excel", id: 462058435
+mas "Microsoft OneNote", id: 784801555
+mas "Microsoft Outlook", id: 985367838
+mas "Microsoft PowerPoint", id: 462062816
+mas "Microsoft Remote Desktop", id: 1295203466
+mas "Microsoft To Do", id: 1274495053
+mas "Microsoft Word", id: 462054704
+mas "OneDrive", id: 823766827
+mas "Remote Desktop", id: 409907375
+mas "Smart Countdown Timer", id: 1410709951
