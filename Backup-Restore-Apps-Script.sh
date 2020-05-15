@@ -155,7 +155,8 @@ verif_dossier_existe_suppr_ren_crea() {
     if [ -d "$dossier_a_tester" ]; then
         # Si le dossier 'dossier_a_tester' existe on demande s'il faut le supprimer ou le renommer.
         echo "$compteur..... Le dossier $dossier_a_tester existe déjà !"
-        _prompt="$compteur..... Voulez-vous le supprimer ? (il sera renmomé sinon) [o/n]"
+        echo "$compteur.....        Voulez-vous le supprimer ? (il sera renmomé sinon)"
+        _prompt="$compteur.....        Taper Oui pour valider la suppression, ou Non pour le renommer."
 
         # Loop forever until the user enters a valid response (Y/N or Yes/No).
         while [ "$res" = -1 ]; do
@@ -165,11 +166,13 @@ verif_dossier_existe_suppr_ren_crea() {
                 res=$TRUE
                 # On supprime le dossier
                 rm -rf "$dossier_a_tester"
+                echo "$compteur.....        Dossier supprimé."
                 ;;
-            [Nn][Oo] | [Nn] | [Nn][Oo][Nn]) # No or N or Non.
+            "" | [Nn][Oo] | [Nn] | [Nn][Oo][Nn]) # Blank o No or N or Non (case-insensitive).
                 res=$FALSE
                 # On renomme le dossier
                 mv "$dossier_a_tester" "$dossier_a_tester--$(date +%Y-%m-%d--%Hh%M)"
+                echo "$compteur.....        Dossier renommé."
                 ;;
             *) # Anything else (including a blank) is invalid.
                 ;;
