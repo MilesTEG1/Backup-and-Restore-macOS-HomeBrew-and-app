@@ -58,49 +58,90 @@ declare -r dossier_fichiers=$script_dir/Fichiers # Dossier qui doit exister tout
 debug_v=true                                     # Une variable de debug pour tester des bouts de code et pas d'autres
 compteur=0                                       # Pour affihcer une numérotation des étapes
 
+################################################################################################################
+## On défini des couleurs de texte et de fond, avec des mises en forme.
+## Il faut utiliser ${xxxx} juste avant le texte à mettre en forme (avec xxxx = une des variables ci-dessous).
+##
+
+BLACK=$(tput setaf 0)   # Pour faire un echo avec le texte en noir
+RED=$(tput setaf 1)     # Pour faire un echo avec le texte en rouge
+GREEN=$(tput setaf 2)   # Pour faire un echo avec le texte en vert
+YELLOW=$(tput setaf 3)  # Pour faire un echo avec le texte en jaune
+BLUE=$(tput setaf 4)    # Pour faire un echo avec le texte en bleu
+MAGENTA=$(tput setaf 5) # Pour faire un echo avec le texte en magenta
+CYAN=$(tput setaf 6)    # Pour faire un echo avec le texte en cyan
+WHITE=$(tput setaf 7)   # Pour faire un echo avec le texte en blanc
+GREY=$(tput setaf 8)    # Pour faire un echo avec le texte en gris (dans ma config iTerm c'est gris)
+LIME_YELLOW=$(tput setaf 190)
+POWDER_BLUE=$(tput setaf 153)
+AUTRE_COULEUR=$(tput setaf 180)
+
+BLACK_BG=$(tput setab 0)   # Pour faire un echo avec le fond en noir
+RED_BG=$(tput setab 1)     # Pour faire un echo avec le fond en rouge
+GREEN_BG=$(tput setab 2)   # Pour faire un echo avec le fond en vert
+YELLOW_BG=$(tput setab 3)  # Pour faire un echo avec le fond en jaune
+BLUE_BG=$(tput setab 4)    # Pour faire un echo avec le fond en bleu
+MAGENTA_BG=$(tput setab 5) # Pour faire un echo avec le fond en magenta
+CYAN_BG=$(tput setab 6)    # Pour faire un echo avec le fond en cyan
+WHITE_BG=$(tput setab 7)   # Pour faire un echo avec le fond en blanc
+GREY_BG=$(tput setab 8)    # Pour faire un echo avec le fond en gris
+LIME_YELLOW_BG=$(tput setab 190)
+POWDER_BLUE_BG=$(tput setab 153)
+
+BOLD=$(tput bold)      # Pour faire un echo avec le texte en gras (c'est pas vraiment gras...)
+NORMAL=$(tput sgr0)    # Pour faire un echo avec le texte normal (on réinitialise toutes les personnalisations)
+BLINK=$(tput blink)    # Pour faire un echo avec le texte clignotant
+REVERSE=$(tput smso)   # Pour faire un echo avec le texte en négatif
+UNDERLINE=$(tput smul) # Pour faire un echo avec le texte souligné
+HBRIGHT=$(tput dim)
+# tput bold    # Select bold mode
+# tput dim     # Select dim (half-bright) mode
+# tput smul    # Enable underline mode
+# tput rmul    # Disable underline mode
+# tput rev     # Turn on reverse video mode
+# tput smso    # Enter standout (bold) mode
+# tput rmso    # Exit standout mode
+##
+################################################################################################################
+
 cd $script_dir # On se place dans le dossier du script
 
-1l
 f_affiche_parametre() {
     #
     # syntax:   f_affiche_parametre [<argument1> [<argument2>]]
     #           Les arguments sont facultatifs...
     #
     if [ -z "$1" ]; then
-        echo "Aucun paramètre fourni."
+        echo "${WHITE}${RED_BG}Aucun paramètre n'a été fourni.${NORMAL}"
     elif [ -n "$2" ]; then
-        echo "Le paramètre fourni n'est pas correct."
-        echo "Paramètre fourni = $1"
+        echo "${YELLOW}Le paramètre fourni ${WHITE}${RED_BG} $1 ${NORMAL}${YELLOW} n'est pas correct. ${NORMAL}"
     else
-        echo "Le nombre de paramètre fourni n'est pas correct."
-        echo "Paramètres fournis = $1"
+        echo "${YELLOW}Le nombre de paramètre fourni n'est pas correct : ${WHITE}${RED_BG} $1 ${NORMAL}"
     fi
     echo
-    echo "Utilisation du script :"
-    echo "      $nom_script [paramètre]"
+    echo "${UNDERLINE}${WHITE}Utilisation du script :${NORMAL}\t${POWDER_BLUE}      $nom_script ${GREEN}[paramètre]${NORMAL}"
     echo
-    echo "Liste des [paramètre] utilisables : BACKUP ; RESTORE"
-    echo "  - Pour restaurer les applications en utilisant HomeBrew :   RESTORE"
-    echo "  - Pour sauvegarder les applications en utilisant HomeBrew : BACKUP"
-    echo "  - Pour afficher ces consignes : -h ou h ou -help ou help ou --h ou --help"
+    echo "${UNDERLINE}${WHITE}Liste des [paramètre] utilisables :${GREEN} BACKUP${NORMAL} ; ${GREEN}RESTORE${NORMAL}"
+    echo "${POWDER_BLUE}  - Pour restaurer les applications en utilisant HomeBrew :   ${GREEN}RESTORE${NORMAL}"
+    echo "${POWDER_BLUE}  - Pour sauvegarder les applications en utilisant HomeBrew : ${GREEN}BACKUP${NORMAL}"
+    echo "${POWDER_BLUE}  - Pour afficher ces consignes : ${GREEN}-h${POWDER_BLUE} ou ${GREEN}h${POWDER_BLUE} ou ${GREEN}-help${POWDER_BLUE} ou ${GREEN}help${POWDER_BLUE} ou -${GREEN}-h${POWDER_BLUE} ou ${GREEN}--help${NORMAL}"
     echo
-    echo "## NOTE IMPORTANTE"
-    echo "# Il faudra probablement modifier le script pour l'adapter à vos besoin. !"
-    echo "# Ne l'excécuter pas sans l'avoir lu entièrement afin de vérifier que ce qui est sauvegarder/restaurer"
-    echo "# correspond bien à vos attentes."
-    echo "#"
-    echo "# Le script sauvegarde ceci :"
-    echo "#       - la liste de tout ce qui a été installé avec HomeBrew (donc soit avec 'brew install', soit avec"
-    echo "#         'brew cask install' et aussi les 'brew tap')."
-    echo "#       - Certains paramètres par défaut (exemple : 'defaults write com.apple.dock tilesize -int 32')"
-    echo "#       - Sauvegarde de certains fichiers de configuration : Oh My Zsh, et certains fichiers/dossiers"
-    echo "#         présents dans ~/Library. Il faudra probablement modifier le script pour l'adapter à vos besoin."
-    echo "# Lors de la sauvegarde, le script va tester l'existance du dossier de destination ./Fichier :"
-    echo "# Si ce dernier existe, il sera proposé de le supprimer ou de le renommer car le script doit commencer"
-    echo "# avec un dossier vierge."
-    echo "# Tout ce qui sera sauvegarder (par copie directe ou par archivage) sera contenu dans ce fichier."
-    echo "# Veillez à ne pas toucher ce dossier pendant l'éxécution du script."
-    echo "#"
+    echo "${UNDERLINE}${WHITE_BG}${MAGENTA}/!\\    NOTE IMPORTANTE    /!\\${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} Il faudra probablement modifier le script pour l'adapter à vos besoin. !${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} Ne l'excécuter pas sans l'avoir lu entièrement afin de vérifier que ce qui est sauvegarder/restaurer${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} correspond bien à vos attentes.${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} Le script sauvegarde ceci :${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR}       - la liste de tout ce qui a été installé avec HomeBrew (donc soit avec 'brew install', soit avec${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR}         'brew cask install' et aussi les 'brew tap').${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR}       - Certains paramètres par défaut (exemple : 'defaults write com.apple.dock tilesize -int 32')${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR}       - Sauvegarde de certains fichiers de configuration : Oh My Zsh, et certains fichiers/dossiers${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR}         présents dans ~/Library. Il faudra probablement modifier le script pour l'adapter à vos besoin.${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} Lors de la sauvegarde, le script va tester l'existance du dossier de destination ./Fichier :${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} Si ce dernier existe, il sera proposé de le supprimer ou de le renommer car le script doit commencer${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} avec un dossier vierge.${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} Tout ce qui sera sauvegarder (par copie directe ou par archivage) sera contenu dans ce fichier.${NORMAL}"
+    echo "${WHITE}┃${AUTRE_COULEUR} Veillez à ne pas toucher ce dossier pendant l'éxécution du script.${NORMAL}"
+    echo "${WHITE}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NORMAL}"
 }
 
 confirm() {
@@ -234,10 +275,8 @@ ecriture_param_lu() {
 }
 
 clear # On efface l'écran
-echo "---------------------------------------------------------------------------------------"
-echo "Ce script permet de sauvegarder ou de restaurer les installations faites par HomeBrew."
-echo "Il permet également de sauvegarder les paramètres associés à certaines applications,"
-echo "comme les paramètres de Oh My Zsh, de l'ancien bash, uncrustify..."
+echo "${WHITE}Ce script permet de sauvegarder ou de restaurer les installations faites par HomeBrew. Il permet également de sauvegarder "
+echo "les paramètres associés à certaines applications, comme les paramètres de Oh My Zsh, de l'ancien bash, uncrustify...${NORMAL}"
 echo
 
 if [ $nb_param -eq 0 ]; then
