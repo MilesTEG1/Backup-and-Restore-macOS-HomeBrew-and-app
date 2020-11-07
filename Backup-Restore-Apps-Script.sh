@@ -121,7 +121,7 @@ f_affiche_parametre() {
     echo
     echo "${UNDERLINE}${WHITE}Utilisation du script :${NORMAL}\t${POWDER_BLUE}      $nom_script ${GREEN}[paramètre]${NORMAL}"
     echo
-    echo "${UNDERLINE}${WHITE}Liste des [paramètre] utilisables :${GREEN} BACKUP${NORMAL} ; ${GREEN}RESTORE${NORMAL}"
+    echo "${UNDERLINE}${WHITE}Liste des [paramètre] utilisables :${NORMAL}${GREEN} BACKUP${NORMAL} ; ${GREEN}RESTORE${NORMAL}"
     echo "${POWDER_BLUE}  - Pour restaurer les applications en utilisant HomeBrew :   ${GREEN}RESTORE${NORMAL}"
     echo "${POWDER_BLUE}  - Pour sauvegarder les applications en utilisant HomeBrew : ${GREEN}BACKUP${NORMAL}"
     echo "${POWDER_BLUE}  - Pour afficher ces consignes : ${GREEN}-h${POWDER_BLUE} ou ${GREEN}h${POWDER_BLUE} ou ${GREEN}-help${POWDER_BLUE} ou ${GREEN}help${POWDER_BLUE} ou -${GREEN}-h${POWDER_BLUE} ou ${GREEN}--help${NORMAL}"
@@ -290,7 +290,11 @@ elif [ $nb_param -ge 2 ]; then
 else
     case "$param_1" in
     #######################################################################################################
-    "RESTORE")      # Partie Restauration #################################################################
+    {Rr}{Ee}{Ss}{Tt}{Oo}{Rr}{Ee})      # Partie Restauration #################################################################
+        echo
+        echo "${RED_BG}${WHITE}Mode RESTAURATION sélectionné${NORMAL}"
+        echo
+        echo
 
         vrai_dossier_Library=~/FakeLibrary
 
@@ -378,7 +382,11 @@ else
         ## ---- Partie pour le BACKUP !!
         ##
     #######################################################################################################
-    "BACKUP")      # Partie Sauvegarde ####################################################################
+    [Bb][Aa][Cc][Kk][Uu][Pp])      # Partie Sauvegarde ####################################################################
+        echo
+        echo "${RED_BG}${WHITE}Mode BACKUP sélectionné${NORMAL}"
+        echo
+        echo
         echo "Sauvegarde des éléments en cours..."
         echo
 
