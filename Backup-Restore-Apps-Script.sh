@@ -274,6 +274,11 @@ ecriture_param_lu() {
     esac
 }
 
+
+#########################
+# Programme principal
+#########################
+
 clear # On efface l'écran
 echo "${WHITE}Ce script permet de sauvegarder ou de restaurer les installations faites par HomeBrew. Il permet également de sauvegarder "
 echo "les paramètres associés à certaines applications, comme les paramètres de Oh My Zsh, de l'ancien bash, uncrustify...${NORMAL}"
@@ -289,8 +294,12 @@ elif [ $nb_param -ge 2 ]; then
     exit
 else
     case "$param_1" in
+    
     #######################################################################################################
-    {Rr}{Ee}{Ss}{Tt}{Oo}{Rr}{Ee})      # Partie Restauration #################################################################
+    # Partie Restauration
+    #######################################################################################################
+    
+    {Rr}{Ee}{Ss}{Tt}{Oo}{Rr}{Ee})
         echo
         echo "${RED_BG}${WHITE}Mode RESTAURATION sélectionné${NORMAL}"
         echo
@@ -381,8 +390,13 @@ else
 
         ## ---- Partie pour le BACKUP !!
         ##
+    
+    
     #######################################################################################################
-    [Bb][Aa][Cc][Kk][Uu][Pp])      # Partie Sauvegarde ####################################################################
+    # Partie Sauvegarde
+    #######################################################################################################
+
+    [Bb][Aa][Cc][Kk][Uu][Pp])
         echo
         echo "${RED_BG}${WHITE}Mode BACKUP sélectionné${NORMAL}"
         echo
