@@ -511,7 +511,7 @@ else
         echo "$compteur..... Compression des dossiers à sauvegarder de Application Support :"
         # Modifier file_to_save qui est la liste des fichiers (pas de dossier) à copier
         #declare -a folder_to_save=("Battery Health 3" "BetterSnapTool" "ForkLift" "Little Snitch" "org.videolan.vlc" "Sublime Text 3" "Tunnelblick" "WhatsApp" "Anki" "Anki2" "Dune Legacy" "iStat Menus")
-        declare -a folder_to_save=('Battery Health 3' 'BetterSnapTool' 'ForkLift' 'Little Snitch' 'org.videolan.vlc' 'Sublime Text 3' 'Tunnelblick' 'WhatsApp' 'Anki' 'Anki2' 'Dune Legacy' 'iStat Menus')
+        declare -a folder_to_save=('Battery Health 3' 'Bartender' 'BetterSnapTool' 'ForkLift' 'reolink' 'Anki' 'Anki2' 'Dune Legacy' 'iStat Menus')
         cd ~/Library/"Application Support"
         tar zcf "$dossier_Library/Application Support.tgz" "${folder_to_save[@]}" # Attention, le contenu de l'archive ne contient que les dossiers, pas l'architecture
         #                                                                         # avec le dossier "Application Support". On nomme donc l'archive avec le même nom que
