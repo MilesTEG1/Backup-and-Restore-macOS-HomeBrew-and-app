@@ -391,7 +391,7 @@ else
         ## ---- Partie pour le BACKUP !!
         ##
     
-    
+
     #######################################################################################################
     # Partie Sauvegarde
     #######################################################################################################
@@ -487,7 +487,7 @@ else
         echo "$compteur..... On copie d'abord tous les fichiers dans un dossier ZSH-Backup/.oh-my-zsh :"
         mkdir $dossier_ZSH/.oh-my-zsh                       # Création du sous-dossier nécessaire qui sera supprimé après l'archivage.
         cp -R ~/.oh-my-zsh/custom $dossier_ZSH/.oh-my-zsh/  # Copie du dossier Custom de .oh-my-zsh/
-        cp ~/.zsh* ~/.aliases ~/.bash_profile $dossier_ZSH/ # Copie des fichiers de configuration de ZSH et de l'ancien bash
+        cp ~/.zsh* ~/.aliases ~/.bash_profile ~/.p10k.zsh $dossier_ZSH/ # Copie des fichiers de configuration de ZSH et de l'ancien bash
         echo "$compteur..... Fin de copie des fichiers Oh My Zsh."
         echo "$compteur..... Compression des fichiers Oh My Zsh..."
         cd $dossier_fichiers                      # On se place dans le dossier contenant celui qu'on veut archiver pour ne pas avoir tout le chemin d'accès dans l'archive...
