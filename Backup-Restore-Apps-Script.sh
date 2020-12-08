@@ -3,7 +3,7 @@
 ## README
 # /!\ Ce script d'installation est conçu pour mon usage. Ne le lancez pas sans vérifier chaque commande ! /!\
 # Utiliser la commande suivante pour rendre le script exécutable :
-# chmod 755 ./HomeBrew-Restore-Installation.sh
+# chmod 755 ./Backup-Restore-Apps-Script.sh
 
 ## NOTE IMPORTANTE
 # Il faudra probablement modifier le script pour l'adapter à vos besoin. !
@@ -299,20 +299,42 @@ else
     # Partie Restauration
     #######################################################################################################
     
-    {Rr}{Ee}{Ss}{Tt}{Oo}{Rr}{Ee})
+    [Rr][Ee][Ss][Tt][Oo][Rr][Ee])
         echo
         echo "${RED_BG}${WHITE}Mode RESTAURATION sélectionné${NORMAL}"
         echo
         echo
 
-        vrai_dossier_Library=~/FakeLibrary
-
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
         if [ ! -d "$dossier_fichiers" ]; then
             # Le dossier 'dossier_fichiers' n'existe pas. On abandonne la procédure de restauration...
             echo "$compteur..... Le dossier $dossier_fichiers n'existe pas !"
             echo "$compteur..... Il n'y a donc rien à restaurer. Arrêt du script..."
             exit 999
         fi
+        # --------
+        # On va se placer dans le dossier Fichier pour utiliser Brewfile
+        # On devra rester dans ce dossier tout le long de la procédure de restauration
+        # --------
+        cd $dossier_fichiers
+
+        # On crée aussi les différents raccourcis de variables
+        # Les emplacements destinations :
+        vrai_dossier_Library=~/Library
+        vrai_dossier_prefs=$vrai_dossier_Library/Preferences
+        vrai_dossier_scripts=$vrai_dossier_Library/Scripts
+        vrai_dossier_services=$vrai_dossier_Library/Services
+        vrai_dossier_workflows=$vrai_dossier_Library/Workflows
+        vrai_dossier_CCC=/Library/Application\ Support/com.bombich.ccc/Scripts # Il faudra un accès avec SUDO pour utiliser cet emplacement
+        # Les emplcements sources dans le dossier Fichiers qui existe (test précédemment fait)
+        dossier_Library=./Library
+        dossier_prefs=$dossier_Library/Preferences
+        dossier_scripts=$dossier_Library/Scripts
+        dossier_services=$dossier_Library/Services
+        dossier_workflows=$dossier_Library/Workflows
+        dossier_CCC=./CCC-Scripts
+        TGZ_ZSH_Backup=./ZSH-Backup.tgz
+
         echo
         echo "Script d'installation des logiciels les plus utilisés sur mon MAC avec HomeBrew."
         echo
@@ -325,28 +347,38 @@ else
         fi
         brew update
         echo
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
 
-        ((compteur++))
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
         ## Utilitaires pour les autres apps : Cask et mas (Mac App Store)
-        echo '$compteur..... Installation de mas, pour installer les apps du Mac App Store.'
+        echo "$compteur..... Installation de mas, pour installer les apps du Mac App Store."
         brew install mas
         echo "$compteur..... Saisir le mail du compte iTunes :"
         read COMPTE
         echo "$compteur..... Saisir le mot de passe du compte : $COMPTE"
         read -s PASSWORD
-        mas signin $COMPTE "$PASSWORD"
-        echo '$compteur..... Installation de mas, pour installer les apps du Mac App Store.'
-        brew install mas
+        mas signin $COMPTE "$PASSWORD"  # BUG # À priori ça ne fonctionne plus... à voir si on laisse ou si on transforme...
+
+
+        #echo '$compteur..... Installation de mas, pour installer les apps du Mac App Store.'
+        #brew install mas
         echo "$compteur..... Vérification de la présence du tap Homebrew/bundle qui va permettre d'utiliser le fichier BrewFile créé lors de la dernière sauvegarde."
         brew tap Homebrew/bundle
         echo
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
 
-        ((compteur++))
+        # DEBUG ## On fait une pause pour vérifier que tout fonctionne
+        #read -p "Appuyer sur une touche pour continuer (ligne 351) ..."
+
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
         echo "$compteur..... Installation de tout ce qui été installé avec HomeBrew lors de la"
         echo "$compteur..... précédente sauvegarde."
         echo "$compteur..... Cette opération va prendre du temps... Prenez un café :D"
-        # On va se placer dans le dossier Fichier pour utiliser Brewfile
-        cd $dossier_fichiers
+       
         if [ -e Brewfile ]; then
             echo "$compteur..... Le fichier Brewfile existe. On peut restaurer son contenu."
             echo "$compteur..... Restauration..."
@@ -355,22 +387,51 @@ else
         else
             echo "$compteur..... Aucun fichier Brewfile n'est présent dans le dossier du script... La restauration est annulée."
         fi
-
         echo
-        ((compteur++))
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+
+        # DEBUG ## On fait une pause pour vérifier que tout fonctionne
+        #read -p "Appuyer sur une touche pour continuer (ligne 373) ..."
+
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
         echo "$compteur..... Copie des fichiers de préférences/Scripts/Services/workflows sauvegardés :"
-        cp $dossier_Prefs/*.plist $vrai_dossier_Library/Preferences/
-
+        cp $dossier_prefs/*.plist $vrai_dossier_prefs/
+        cp -R $dossier_services/* $vrai_dossier_services/
+        mkdir -p $vrai_dossier_scripts
+        cp -R $dossier_scripts/* $vrai_dossier_scripts/
+        cp -R $dossier_workflows/* $vrai_dossier_workflows
+        # Et comme les scripts de fusion de PDF utilisent le fichier de page blanche, on le copie aussi.
+        cp ./PageBlanche.pdf ~/
         echo
-        ((compteur++))
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+        
+
+        # DEBUG ## On fait une pause pour vérifier que tout fonctionne
+        #read -p "Appuyer sur une touche pour continuer (ligne 385) ..."
+
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
         echo "$compteur..... Copie des scripts pour CarbonCopyCloner :"
-        sudo cp $dossier_CCC/* /Library/Application\ Support/com.bombich.ccc/Scripts/ # Et on copie les fichiers désirés
-
+        # Si le chemin de destination n'existe pas, CCC n'a pas encoré été lancé, on va donc créer le chemin d'accès
+        # il faut un accès avec SUDO !
+        sudo mkdir -p "$vrai_dossier_CCC" 
+        sudo cp -p ${dossier_CCC}/* "$vrai_dossier_CCC"
         echo
-        ((compteur++))
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+
+        # DEBUG ## On fait une pause pour vérifier que tout fonctionne
+        #read -p "Appuyer sur une touche pour continuer (ligne 395) ..."
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
         echo "$compteur..... Restauration des préférences par défauts sauvegardées :"
         if [ -e reglages-macOS.sh ]; then
             # Le fichier reglages-macOS.sh existe, on peut l'exécuter
+            # Mais avant, il va falloir changer les permissions du fichier, sinon il ne s'éxécutera pas...
+            chmod 755 ./reglages-macOS.sh
             ./reglages-macOS.sh
         else
             echo "$compteur..... Le fichier reglages-macOS.sh n'est pas présent dans le dossier Fichiers..."
@@ -378,20 +439,84 @@ else
         fi
 
         echo
-        ((compteur++))
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+
+        # DEBUG ## On fait une pause pour vérifier que tout fonctionne
+        #read -p "Appuyer sur une touche pour continuer (ligne 390) ..."
+
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
         echo "$compteur..... Installation de Oh My Zsh :"
-        #sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-        echo "$compteur..... Installation des plugins Oh My Zsh :"
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+        echo
+        echo ".....       S'il y a une erreur de ce type :"
+        echo ".....       [oh-my-zsh] Insecure completion-dependent directories detected"
+        echo ".....       Il faudra lancer la commande suivante : ${WHITE}${RED_BG}compaudit | xargs chmod g-w${NORMAL}"
+        echo "....."
+
+        echo "$compteur..... Installation des plugins et thème pour Oh My Zsh :"
         git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
         git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+        git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions
+
+        echo
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+
+        # DEBUG ## On fait une pause pour vérifier que tout fonctionne
+        #read -p "Appuyer sur une touche pour continuer (ligne 376) ..."
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
+        echo "$compteur..... Copie des fichiers pour ZSH :"
+        if [ -e $TGZ_ZSH_Backup ]; then
+            # Le fichier ZSH-Backup.tgz existe on peut donc extraire ce qu'il contient
+            printf "$compteur..... Le fichier $TGZ_ZSH_Backup existe. On peut donc extraire son contenu.\n"
+            echo "$compteur.....    Décompression du fichier ZSH-Backup.tgz"
+            tar zxf ./ZSH-Backup.tgz
+            # L'extraction étant terminée, on peut copier les fichiers :
+            echo "$compteur.....    Copie des fichiers dans le dossier home ~/"
+            cp -v ./ZSH-Backup/.zsh* ./ZSH-Backup/.bash_profile ./ZSH-Backup/.p10k.zsh ./ZSH-Backup/.aliases ~/
+            echo "$compteur.....    Copie des fichiers pour ZSH terminée."
+        else
+            printf "$compteur..... Le fichier $TGZ_ZSH_Backup n'existe pas. \n$compteur..... Impossible de restaurer les réglages de ZSH sans ce fichier !"
+            echo "$compteur..... Abandon de la restauration des fichiers ZSH."
+        fi        
+
+        echo
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+
+
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
+        echo "$compteur..... Extraction des dossiers GIT (dans le dossier ~/Git) :"
+        tar zxf ./Dossier-Git.tgz -C ~/
+        echo
+        ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+
+
+
+        ## Modèle de structure pour la copie
+        # -- DÉBUT d'une étape de restauration -----------------------------------------------------------------------------
+        # echo "$compteur..... Installation/Copie de blabla :"
+        #
+        # echo
+        # ((compteur++)) # Fin d'une étape
+        # -- FIN d'une étape de restauration -------------------------------------------------------------------------------
+
+
+        echo
+        echo "Script de restauration terminé."
+        echo
 
         ;;
 
         ## ---- Partie pour le BACKUP !!
         ##
     
-    
+
     #######################################################################################################
     # Partie Sauvegarde
     #######################################################################################################
@@ -487,7 +612,7 @@ else
         echo "$compteur..... On copie d'abord tous les fichiers dans un dossier ZSH-Backup/.oh-my-zsh :"
         mkdir $dossier_ZSH/.oh-my-zsh                       # Création du sous-dossier nécessaire qui sera supprimé après l'archivage.
         cp -R ~/.oh-my-zsh/custom $dossier_ZSH/.oh-my-zsh/  # Copie du dossier Custom de .oh-my-zsh/
-        cp ~/.zsh* ~/.aliases ~/.bash_profile $dossier_ZSH/ # Copie des fichiers de configuration de ZSH et de l'ancien bash
+        cp ~/.zsh* ~/.aliases ~/.bash_profile ~/.p10k.zsh $dossier_ZSH/ # Copie des fichiers de configuration de ZSH et de l'ancien bash
         echo "$compteur..... Fin de copie des fichiers Oh My Zsh."
         echo "$compteur..... Compression des fichiers Oh My Zsh..."
         cd $dossier_fichiers                      # On se place dans le dossier contenant celui qu'on veut archiver pour ne pas avoir tout le chemin d'accès dans l'archive...
